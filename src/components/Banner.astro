@@ -1,0 +1,26 @@
+---
+import type { TBanner } from "../types";
+
+interface Props {
+  data: TBanner | undefined;
+}
+
+const { data } = Astro.props;
+
+if (!data) return null;
+
+const link = data.link;
+---
+
+<div class="w-full bg-domain-dark flex justify-center py-1">
+  <p class="text-white text-sm">
+    {data.description}
+    {
+      link && (
+        <a class="ml-3" href={link.href}>
+          {link.label}
+        </a>
+      )
+    }
+  </p>
+</div>

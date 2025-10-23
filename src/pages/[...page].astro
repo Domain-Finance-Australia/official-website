@@ -1,0 +1,38 @@
+---
+import type { TStrapiResponse, TBlock } from "../types";
+import Layout from "../layouts/Layout.astro";
+import BlockRenderer from "../components/blocks/BlockRenderer.astro";
+import { BASE_API_URL } from "../utils/url";
+
+type TPageData = {
+  id: number;
+  description: string;
+  slug: string;
+  blocks: TBlock[];
+};
+
+export async function getStaticPaths() {
+  const path = "/api/pages";
+  const url = new URL(path, BASE_API_URL);
+  const response = await fetch(url.href);
+  const pageData: TStrapiResponse<TPageData[]> = await response.json();
+
+  if (pageData.error) {
+    console.error("Failed to fetch global data:", pageData.error.message);
+    throw new Error(pageData.error.message);
+  }
+
+  const pages = pageData.data?.map((p) => ({
+    params: { page: p.slug },
+    props: { data: p },
+  }));
+
+  return pages;
+}
+
+const { data } = Astro.props;
+---
+
+<Layout>
+  <BlockRenderer blocks={data.blocks} />
+</Layout>

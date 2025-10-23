@@ -1,0 +1,35 @@
+---
+import Layout from "../layouts/Layout.astro";
+import BlockRenderer from "../components/blocks/BlockRenderer.astro";
+import type { TBlock, TStrapiResponse } from "../types";
+import { BASE_API_URL } from "../utils/url";
+
+type TPageData = {
+  id: number;
+  title: string;
+  description: string;
+  blocks: TBlock[];
+};
+
+async function getLandingPageData(): Promise<TStrapiResponse<TPageData>> {
+  const path = "/api/landing-page";
+  const url = new URL(path, BASE_API_URL);
+  const response = await fetch(url.href);
+  const data = await response.json();
+
+  return data;
+}
+
+const data = await getLandingPageData();
+
+if (data.error) {
+  console.error("Failed to fetch global data:", data.error.message);
+  throw new Error(data.error.message);
+}
+
+const blocks = data.data?.blocks;
+---
+
+<Layout>
+  <BlockRenderer blocks={blocks} />
+</Layout>

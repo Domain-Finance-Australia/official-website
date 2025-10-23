@@ -1,0 +1,24 @@
+---
+import { Image } from "astro:assets";
+import { BASE_API_URL } from "../utils/url";
+interface Props {
+  src?: string | null;
+  alt: string | null;
+  width: number;
+  height: number;
+  class?: string;
+  fill?: boolean;
+}
+const { src, alt, width, height, class: className, fill } = Astro.props;
+
+const imageSrc = src ? BASE_API_URL + src : "/images/fallback.png";
+---
+
+<Image
+  src={imageSrc}
+  alt={alt}
+  width={width}
+  height={height}
+  class={className}
+  style={!fill && `width: ${width}px; height: ${height}px;`}
+/>

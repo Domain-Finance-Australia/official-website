@@ -1,0 +1,88 @@
+---
+import Heading from "../../Heading.astro";
+import Link from "../../Link.astro";
+import HeroImageFormatter from "./HeroImageFormatter.astro";
+import StrapiImage from "../../StrapiImage.astro";
+import type { THero } from "../../../types";
+
+interface Props {
+  block: THero | undefined;
+}
+
+const { block } = Astro.props;
+
+if (!block) return null;
+
+const hasImages = !!block.images;
+
+const isImageAsBackground = block.imageAsBackground;
+
+const imageUrl = hasImages ? block.images[0].url : "";
+---
+
+<section class="flex w-full h-[calc(100vh*(10/12))] justify-center relative items-center">
+  {hasImages && (
+<div
+    class:list={["absolute inset-0 ", !isImageAsBackground && "lg:hidden block"]}
+  >
+    <StrapiImage
+      src={imageUrl}
+      alt="Hero background"
+      width={1920}
+      height={1080}
+      fill
+      class="w-full h-full object-cover"
+    />
+  </div>
+  <div
+    class:list={[
+      "absolute inset-0 bg-black/40",
+      !isImageAsBackground && "lg:hidden block",
+      ]} /
+  >
+  </div>
+  )}
+
+  {
+    !isImageAsBackground ? (
+      <div class="max-w-7xl px-7  w-full flex items-center flex-wrap  justify-evenly py-30">
+        <div
+          class:list={[
+            "text-white flex flex-col z-4 lg:max-w-[450px] max-w-full lg:px-0 px-5",
+            hasImages ? "items-start" : "justify-center items-center w-full",
+          ]}
+        >
+          <Heading level={1} class:list={["text-center mb-4", hasImages && "lg:text-left"]}>
+            {block.heading}
+          </Heading>
+          <p class:list={["text-center", hasImages && "lg:text-left"]}>{block.text}</p>
+          <div class="mt-10 w-full flex gap-7 flex-wrap lg:justify-start justify-center items-center">
+            {block.links.map((link) => (
+              <Link {...link}>{link.label}</Link>
+            ))}
+          </div>
+        </div>
+
+        {hasImages && (
+          <div class="relative h-full ">
+            <HeroImageFormatter images={block.images} />
+          </div>
+        )}
+      </div>
+    ) : (
+      <div class="relative z-4 flex items-center justify-center h-full px-4">
+        <div class="text-center text-white max-w-4xl">
+          <Heading level={1} class="text-4xl mb-4">{block.heading}</Heading>
+          <p >{block.text}</p>
+          {block.links && block.links.length > 0 && (
+            <div class="flex gap-4 justify-center flex-wrap">
+              {block.links.map((link) => (
+                <Link {...link}>{link.label}</Link>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
+</section>

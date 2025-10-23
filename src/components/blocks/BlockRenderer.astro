@@ -1,0 +1,37 @@
+---
+import type { TBlock, BlockType } from "../../types";
+import Hero from "./hero/Hero.astro";
+import CalendlyEmbed from "./CalendlyEmbed.astro";
+import ValuePropositions from "./value-propositions/ValuePropositions.astro";
+import HeadingAndText from "./HeadingAndText.astro";
+import Affiliations from "./Affiliations.astro";
+import ProductCards from "./ProductCards.astro";
+import ContentWithImage from "./ContentWithImage.astro";
+import Testimonials from "./testimonials/Testimonials.astro";
+
+interface Props {
+  blocks: TBlock[] | undefined;
+}
+
+const componentMap: Record<BlockType, any> = {
+  "blocks.hero": Hero,
+  "blocks.affiliations": Affiliations,
+  "blocks.testimonials": Testimonials,
+  "blocks.product-cards": ProductCards,
+  "blocks.heading-and-text": HeadingAndText,
+  "blocks.content-with-image": ContentWithImage,
+  "blocks.value-propositions": ValuePropositions,
+  "blocks.calendly-booking-embed": CalendlyEmbed,
+};
+
+const { blocks } = Astro.props;
+
+if (!blocks) return null;
+---
+
+{
+  blocks.map((block) => {
+    const Component = componentMap[block.__component];
+    return Component ? <Component block={block} /> : null;
+  })
+}

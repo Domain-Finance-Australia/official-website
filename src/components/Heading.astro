@@ -1,0 +1,22 @@
+---
+interface Props {
+  level: 1 | 2 | 3 | 4 | 5 | 6;
+  class?: string;
+}
+
+const { level, class: className } = Astro.props;
+const Tag = `h${level}` as any;
+
+const defaultStyles = {
+  1: "text-5xl font-extrabold",
+  2: "text-4xl font-extrabold",
+  3: "text-3xl font-extrabold",
+  4: "text-2xl font-bold",
+  5: "text-xl font-bold",
+  6: "text-lg font-semibold",
+};
+---
+
+<Tag class:list={["w-full ", defaultStyles[level], className]}>
+  <slot />
+</Tag>

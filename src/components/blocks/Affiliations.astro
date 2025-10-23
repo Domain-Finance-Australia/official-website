@@ -1,0 +1,35 @@
+---
+import type { TAffiliations } from "../../types";
+import BlockLayout from "./BlockLayout.astro";
+import Heading from "../Heading.astro";
+import StrapiImage from "../StrapiImage.astro";
+
+interface Props {
+  block: TAffiliations | undefined;
+}
+
+const { block } = Astro.props;
+
+if (!block) return null;
+---
+
+<BlockLayout>
+  <div class="flex flex-col gap-20">
+    <Heading level={2} class="text-center">{block.heading}</Heading>
+    <div class="flex gap-20 md:gap-50 flex-wrap justify-center">
+      {
+        block.logos.map((logo) => (
+          <a href={logo.href} target="_blank">
+            <StrapiImage
+              src={logo.image.url}
+              alt={logo.image.alternativeText || "Membership image"}
+              width={300}
+              height={150}
+              class="object-contain"
+            />
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</BlockLayout>

@@ -1,0 +1,20 @@
+@import "tailwindcss";
+@plugin '@tailwindcss/typography';
+
+@theme {
+  --color-domain-dark: #002855;
+  --color-domain-regular: #0058bb;
+  --color-domain-light: #11a2de;
+}
+
+body {
+  font-family: var(--font-lato), Arial, Helvetica, sans-serif;
+  background: var(--domain-dark-blue);
+  background: linear-gradient(
+    64deg,
+    var(--color-domain-dark) 25%,
+    var(--color-domain-regular) 98%
+  );
+  background-attachment: fixed;
+  background-size: cover;
+}

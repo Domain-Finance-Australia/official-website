@@ -1,0 +1,308 @@
+---
+import StrapiImage from "./StrapiImage.astro";
+import type { THeader } from "../types";
+
+interface Props {
+  data: THeader | undefined;
+}
+
+const { data } = Astro.props;
+
+if (!data) return null;
+
+const logoSrc = data.logo.image.url;
+---
+
+<nav
+  id="header-container"
+  class="flex h-[120px] md:static sticky top-0 w-full flex-row items-center justify-between z-50 bg-gradient-to-r from-domain-dark to-domain-regular shadow-lg"
+>
+  <a class="relative w-[200px] h-full md:ml-15 ml-5" href="/">
+    <StrapiImage
+      src={logoSrc}
+      width={200}
+      height={100}
+      alt="Domain Finance Logo"
+      class="py-3"
+    />
+  </a>
+
+  <!-- Desktop Nav -->
+  <ul class="gap-10 text-white mr-15 font-semibold text-sm md:flex hidden">
+    {
+      data.navItems.map(({ href, label, subLinks }) => (
+        <li class="relative group cursor-pointer p-2">
+          {subLinks.length > 0 ? (
+            <>
+              <button class="dropdown-toggle cursor-pointer hover:opacity-80 transition flex items-center select-none">
+                {label}
+              </button>
+              <ul class="dropdown absolute right-[-10px] mt-2 p-1 hidden w-52 flex-col rounded-lg bg-domain-dark text-white shadow-lg group-hover:flex ">
+                {subLinks.map((link) => (
+                  <li>
+                    <a
+                      href={link.href}
+                      class="block px-4 py-2 hover:bg-domain-regular rounded-lg transition"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <a href={href} class="hover:opacity-80 transition">
+              {label}
+            </a>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+
+  <!-- Mobile Toggle -->
+  <button
+    id="menu-toggle"
+    aria-controls="mobile-menu"
+    aria-label="Toggle navigation menu"
+    class="flex flex-col justify-center items-center z-15 mr-5 md:hidden"
+  >
+    <span class="menu-bar"></span>
+    <span class="menu-bar"></span>
+    <span class="menu-bar"></span>
+  </button>
+</nav>
+
+<!-- Mobile Menu -->
+<div
+  id="mobile-menu"
+  class="h-screen fixed z-15 top-0 left-0 w-full bg-domain-dark md:hidden hidden text-white"
+>
+  <ul
+    class="mt-[200px] px-10 w-full flex flex-col items-end text-xl font-bold gap-6"
+  >
+    {
+      data.navItems.map(({ href, label, subLinks }) => (
+        <li class="cursor-pointer p-2 text-right" data-title={label}>
+          {subLinks.length > 0 ? (
+            <>
+              <button class="w-full flex justify-end items-center gap-2 dropdown-toggle">
+                {label}
+              </button>
+              <ul class="dropdown hidden flex-col mt-2 pr-4 gap-2 text-lg">
+                {subLinks.map((link) => (
+                  <li>
+                    <a
+                      href={link.href}
+                      class="block hover:opacity-80 transition"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <a href={href} class="block hover:opacity-80 transition">
+              {label}
+            </a>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<script is:inline>
+  // dropdown on click
+  function closeAllDropdowns() {
+    document.querySelectorAll(".dropdown").forEach((d) => {
+      if (d.classList.contains("flex")) {
+        d.classList.remove("flex");
+        d.classList.add("hidden");
+      }
+    });
+  }
+
+  // toggle buttons for dropdowns (desktop)
+  const dropdownToggles = document.querySelectorAll(".dropdown-toggle");
+
+  dropdownToggles.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      // Prevent the document handler from running for this click
+      e.stopPropagation();
+
+      const parent = btn.closest("li");
+      if (!parent) return;
+      const dropdown = parent.querySelector(".dropdown");
+      if (!dropdown) return;
+
+      console.log(dropdown);
+      const isOpen =
+        dropdown.classList.contains("flex") &&
+        !dropdown.classList.contains("hidden");
+
+      console.log("goodbye", isOpen);
+      // close everything first (so only one opens at a time)
+      closeAllDropdowns();
+
+      if (!isOpen) {
+        dropdown.classList.add("flex");
+        dropdown.classList.remove("hidden");
+      } else {
+        dropdown.classList.add("hidden");
+        dropdown.classList.remove("flex");
+      }
+    });
+  });
+
+  // Close dropdowns when clicking/tapping outside
+  const outsideHandler = (e) => {
+    // if the clicked element is inside a dropdown or the toggle, ignore
+    if (e.target.closest(".dropdown") || e.target.closest(".dropdown-toggle"))
+      return;
+    closeAllDropdowns();
+  };
+
+  // Use pointerdown for best compatibility with touch + mouse devices
+  document.addEventListener("pointerdown", outsideHandler);
+
+  // Optional: also close on escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeAllDropdowns();
+  });
+
+  const menuToggle = document.getElementById("menu-toggle");
+  const mobileMenu = document.getElementById("mobile-menu");
+  const headerContainer = document.getElementById("header-container");
+  let isOpen = false;
+
+  const bars = menuToggle.querySelectorAll(".menu-bar");
+  bars.forEach(
+    (bar) =>
+      (bar.className =
+        "menu-bar h-1 z-15 w-7 bg-white block rounded-sm transition-all duration-100 ease-out"),
+  );
+  bars[0].classList.add("-translate-y-1");
+  bars[2].classList.add("translate-y-1");
+
+  menuToggle?.addEventListener("click", () => {
+    isOpen = !isOpen;
+    mobileMenu.classList.toggle("hidden", !isOpen);
+    headerContainer.classList.toggle("bg-gradient-to-r", !isOpen);
+    document.body.style.overflow = isOpen ? "hidden" : "visible";
+
+    const bars = menuToggle.querySelectorAll(".menu-bar");
+    if (isOpen) {
+      bars[0].classList.add("rotate-45", "translate-y-3");
+      bars[1].classList.add("opacity-0");
+      bars[2].classList.add("-rotate-45", "-translate-y-1");
+    } else {
+      bars.forEach(
+        (bar) =>
+          (bar.className =
+            "menu-bar h-1 z-15 w-7 bg-white block rounded-sm transition-all duration-100 ease-out"),
+      );
+      bars[0].classList.add("-translate-y-1");
+      bars[2].classList.add("translate-y-1");
+    }
+  });
+</script>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    // dropdown on click
+    function closeAllDropdowns() {
+      document.querySelectorAll(".dropdown").forEach((d) => {
+        if (d.classList.contains("flex")) {
+          d.classList.remove("flex");
+          d.classList.add("hidden");
+        }
+      });
+    }
+
+    // toggle buttons for dropdowns (desktop)
+    const dropdownToggles = document.querySelectorAll(".dropdown-toggle");
+
+    dropdownToggles.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        // Prevent the document handler from running for this click
+        e.stopPropagation();
+
+        const parent = btn.closest("li");
+        if (!parent) return;
+        const dropdown = parent.querySelector(".dropdown");
+        if (!dropdown) return;
+
+        console.log(dropdown);
+        const isOpen =
+          dropdown.classList.contains("flex") &&
+          !dropdown.classList.contains("hidden");
+
+        console.log("goodbye", isOpen);
+        // close everything first (so only one opens at a time)
+        closeAllDropdowns();
+
+        if (!isOpen) {
+          dropdown.classList.add("flex");
+          dropdown.classList.remove("hidden");
+        } else {
+          dropdown.classList.add("hidden");
+          dropdown.classList.remove("flex");
+        }
+      });
+    });
+
+    // Close dropdowns when clicking/tapping outside
+    const outsideHandler = (e) => {
+      // if the clicked element is inside a dropdown or the toggle, ignore
+      if (e.target.closest(".dropdown") || e.target.closest(".dropdown-toggle"))
+        return;
+      closeAllDropdowns();
+    };
+
+    // Use pointerdown for best compatibility with touch + mouse devices
+    document.addEventListener("pointerdown", outsideHandler);
+
+    // Optional: also close on escape key
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeAllDropdowns();
+    });
+
+    const menuToggle = document.getElementById("menu-toggle");
+    const mobileMenu = document.getElementById("mobile-menu");
+    const headerContainer = document.getElementById("header-container");
+    let isOpen = false;
+
+    const bars = menuToggle.querySelectorAll(".menu-bar");
+    bars.forEach(
+      (bar) =>
+        (bar.className =
+          "menu-bar h-1 z-15 w-7 bg-white block rounded-sm transition-all duration-100 ease-out"),
+    );
+    bars[0].classList.add("-translate-y-1");
+    bars[2].classList.add("translate-y-1");
+
+    menuToggle?.addEventListener("click", () => {
+      isOpen = !isOpen;
+      mobileMenu.classList.toggle("hidden", !isOpen);
+      headerContainer.classList.toggle("bg-gradient-to-r", !isOpen);
+      document.body.style.overflow = isOpen ? "hidden" : "visible";
+
+      const bars = menuToggle.querySelectorAll(".menu-bar");
+      if (isOpen) {
+        bars[0].classList.add("rotate-45", "translate-y-3");
+        bars[1].classList.add("opacity-0");
+        bars[2].classList.add("-rotate-45", "-translate-y-1");
+      } else {
+        bars.forEach(
+          (bar) =>
+            (bar.className =
+              "menu-bar h-1 z-15 w-7 bg-white block rounded-sm transition-all duration-100 ease-out"),
+        );
+        bars[0].classList.add("-translate-y-1");
+        bars[2].classList.add("translate-y-1");
+      }
+    });
+  });
+</script>

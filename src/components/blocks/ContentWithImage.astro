@@ -1,0 +1,37 @@
+---
+import type { TContentWithImage } from "../../types";
+import BlockLayout from "./BlockLayout.astro";
+import StrapiImage from "../StrapiImage.astro";
+import Heading from "../Heading.astro";
+import Link from "../Link.astro";
+
+interface Props {
+  block: TContentWithImage | undefined;
+}
+
+const { block } = Astro.props;
+
+if (!block) return null;
+---
+
+<BlockLayout>
+  <div
+    class:list={[
+      "flex gap-10 max-w-7xl w-full flex-wrap justify-evenly",
+      block.style === "RIGHT" && "flex-row-reverse",
+    ]}
+  >
+    <StrapiImage
+      src={block.image.url}
+      alt={block.image.alternativeText}
+      width={350}
+      height={400}
+      class="object-cover rounded-2xl"
+    />
+    <div class="max-w-md flex flex-col gap-10 justify-center">
+      <Heading level={3}>{block.heading}</Heading>
+      <p>{block.text}</p>
+      {block.cta && <Link class="w-fit" {...block.cta} />}
+    </div>
+  </div>
+</BlockLayout>

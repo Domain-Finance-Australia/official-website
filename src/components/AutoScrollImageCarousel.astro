@@ -1,0 +1,151 @@
+---
+import type { TLogo } from "../types";
+import StrapiImage from "./StrapiImage.astro";
+
+interface Props {
+  images: TLogo[];
+  imageWidth?: number;
+  imageHeight?: number;
+  gap?: number;
+  scrollSpeed?: number; // seconds for one complete scroll
+}
+
+const {
+  images,
+  imageWidth = 300,
+  imageHeight = 200,
+  gap = 16,
+  scrollSpeed = 20,
+} = Astro.props;
+
+const carouselId = `carousel-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+<div class="carousel-container" data-carousel={carouselId}>
+  <div class="carousel-track">
+    {
+      images.map((logo) => (
+        <StrapiImage
+          src={logo.image.url}
+          alt={logo.image.alternativeText || "Carousel image"}
+          width={imageWidth}
+          height={imageHeight}
+          class="carousel-image object-contain"
+        />
+      ))
+    }
+    <!-- Duplicate images for seamless loop -->
+    {
+      images.map((logo) => (
+        <StrapiImage
+          src={logo.image.url}
+          alt={logo.image.alternativeText || "Carousel image"}
+          width={imageWidth}
+          height={imageHeight}
+          class="carousel-image object-contain"
+          aria-hidden="true"
+        />
+      ))
+    }
+  </div>
+</div>
+
+<style
+  define:vars={{
+    imageWidth: `${imageWidth}px`,
+    imageHeight: `${imageHeight}px`,
+    gap: `${gap}px`,
+    scrollSpeed: `${scrollSpeed}s`,
+  }}
+>
+  .carousel-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .carousel-track {
+    display: flex;
+    gap: var(--gap);
+    width: fit-content;
+  }
+
+  .carousel-track.scrolling {
+    animation: scroll var(--scrollSpeed) linear infinite;
+  }
+
+  .carousel-image {
+    width: var(--imageWidth);
+    height: var(--imageHeight);
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* Pause on hover */
+  .carousel-container:hover .carousel-track.scrolling {
+    animation-play-state: paused;
+  }
+</style>
+
+<script>
+  function initCarousel() {
+    const containers = document.querySelectorAll(".carousel-container");
+
+    containers.forEach((container) => {
+      const track = container.querySelector(".carousel-track") as HTMLElement;
+      if (!track) return;
+
+      const checkOverflow = () => {
+        const containerWidth = container.clientWidth;
+        const images = Array.from(
+          track.querySelectorAll('.carousel-image:not([aria-hidden="true"])'),
+        );
+        const gap = parseInt(getComputedStyle(track).gap) || 0;
+
+        // Calculate total width of original images
+        const totalWidth = images.reduce((sum, img) => {
+          return sum + (img as HTMLElement).offsetWidth + gap;
+        }, -gap); // Subtract one gap since there's no gap after last image
+
+        if (totalWidth > containerWidth) {
+          track.classList.add("scrolling");
+        } else {
+          track.classList.remove("scrolling");
+        }
+      };
+
+      // Check on load
+      checkOverflow();
+
+      // Check on resize
+      const resizeObserver = new ResizeObserver(checkOverflow);
+      resizeObserver.observe(container);
+
+      // Check when images load
+      const images = track.querySelectorAll("img");
+      images.forEach((img) => {
+        if (img.complete) {
+          checkOverflow();
+        } else {
+          img.addEventListener("load", checkOverflow);
+        }
+      });
+    });
+  }
+
+  // Initialize on page load
+  initCarousel();
+
+  // Re-initialize on navigation (for view transitions)
+  document.addEventListener("astro:page-load", initCarousel);
+</script>

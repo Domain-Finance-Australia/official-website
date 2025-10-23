@@ -1,0 +1,42 @@
+---
+import type { TProductCards } from "../../types";
+import BlockLayout from "./BlockLayout.astro";
+import Heading from "../Heading.astro";
+import StrapiImage from "../StrapiImage.astro";
+
+interface Props {
+  block: TProductCards;
+}
+
+const { block } = Astro.props;
+---
+
+<BlockLayout>
+  <div>
+    <Heading level={3}>{block.heading}</Heading>
+    <p>{block.subHeading}</p>
+    <div class="flex gap-10 mt-10 justify-center flex-wrap">
+      {
+        block.cards.map((card) => (
+          <a
+            href={card.href}
+            class="relative w-[300px] h-[360px] rounded-2xl flex justify-center overflow-hidden items-center hover:translate-y-[-5px] transition-all"
+          >
+            <StrapiImage
+              src={card.image.url}
+              alt={card.image.alternativeText || "Product card image."}
+              width={300}
+              height={360}
+              class="absolute object-cover opacity-80"
+            />
+            <div class="bg-domain-dark opacity-20 absolute w-full h-full" />
+            <div class="z-5  text-center text-white px-5">
+              <Heading level={5}>{card.heading}</Heading>
+              <p class="mt-10">{card.description}</p>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</BlockLayout>

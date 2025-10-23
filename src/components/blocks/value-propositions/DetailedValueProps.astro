@@ -1,0 +1,59 @@
+---
+import type { TValuePropositions } from "../../../types";
+import StrapiIcon from "../../StrapiIcon.astro";
+import StrapiImage from "../../StrapiImage.astro";
+import Link from "../../Link.astro";
+import Heading from "../../Heading.astro";
+
+interface Props {
+  block: TValuePropositions | undefined;
+}
+
+const { block } = Astro.props;
+
+if (!block) return null;
+---
+
+<div>
+  <Heading level={3} class="text-center mb-3">{block.heading}</Heading>
+  <p class="mb-10 text-center">{block.subHeading}</p>
+  <div class="flex flex-wrap justify-evenly gap-10">
+    {
+      block.image && (
+        <StrapiImage
+          src={block.image.url}
+          alt={block.image.alternativeText}
+          width={500}
+          height={500}
+          fill
+          class="object-cover col-span-2 row-span-2 h-[400px] md:h-[500px]  rounded-2xl"
+        />
+      )
+    }
+    <div class="grid grid-cols-1 gap-10 md:gap-5 md:grid-cols-2">
+      {
+        block.benefits.map((benefit) => (
+          <div class="bg-gradient-to-t from-domain-dark to-domain-regular p-5 rounded-2xl text-white w-65">
+            <div class="flex justify-between mb-5">
+              {benefit.icon && (
+                <StrapiIcon
+                  src={benefit.icon.url}
+                  width={50}
+                  height={50}
+                  class="mr-5"
+                />
+              )}
+              <Heading level={6} class="text-right">
+                {benefit.title}
+              </Heading>
+            </div>
+            <p>{benefit.description}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+  <div class="w-full flex justify-evenly">
+    {block.cta && <Link {...block.cta} />}
+  </div>
+</div>

@@ -1,0 +1,73 @@
+---
+import type { TImage } from "../../../types";
+import StrapiImage from "../../StrapiImage.astro";
+
+interface Props {
+  images: TImage[];
+}
+
+const { images } = Astro.props;
+if (!images?.length) return null;
+
+const altText = "Hero section image";
+const imageUrls = images.map((image) => image.url);
+
+const layouts = {
+  1: [
+    {
+      url: imageUrls[0],
+      width: 400,
+      height: 400,
+      class: "row-span-2 col-span-2",
+    },
+  ],
+  2: [
+    {
+      url: imageUrls[0],
+      width: 300,
+      height: 300,
+      class: "row-span-2 col-span-2 lg:col-span-1",
+    },
+    {
+      url: imageUrls[1],
+      width: 300,
+      height: 350,
+      class: "row-span-2 lg:flex hidden",
+    },
+  ],
+  3: [
+    {
+      url: imageUrls[0],
+      width: 300,
+      height: 400,
+      class: "row-span-2 col-span-2 lg:col-span-1",
+    },
+    {
+      url: imageUrls[1],
+      width: 300,
+      height: 250,
+      class: "lg:flex hidden",
+      extraClass: "mt-auto",
+    },
+    { url: imageUrls[2], width: 350, height: 350, class: "lg:flex hidden" },
+  ],
+};
+
+const layout = layouts[images.length as keyof typeof layouts];
+---
+
+<div class="hidden grid-cols-2 grid-rows-2 max-w-[500px] gap-3 lg:grid">
+  {
+    layout?.map((img) => (
+      <div class={`flex justify-center items-center ${img.class}`}>
+        <StrapiImage
+          src={img.url}
+          alt={altText}
+          width={img.width}
+          height={img.height}
+          class={`object-cover rounded-lg shadow-domain-dark shadow-xl/70 ${img.extraClass || ""}`}
+        />
+      </div>
+    ))
+  }
+</div>

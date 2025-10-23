@@ -1,0 +1,53 @@
+---
+import "../styles/global.css";
+import type { TBanner, THeader, TFooter, TStrapiResponse } from "../types";
+import Header from "../components/Header.astro";
+import Banner from "../components/Banner.astro";
+import Footer from "../components/footer/Footer.astro";
+import { BASE_API_URL } from "../utils/url";
+import ClientRouter from "astro/components/ClientRouter.astro";
+
+type TGlobalData = {
+  id: number;
+  title: string;
+  banner: TBanner;
+  header: THeader;
+  footer: TFooter;
+};
+
+async function getStrapiGlobalData(): Promise<TStrapiResponse<TGlobalData>> {
+  const path = "/api/global";
+  const url = new URL(path, BASE_API_URL);
+  const response = await fetch(url.href);
+  const data = await response.json();
+
+  return data;
+}
+
+const globalData = await getStrapiGlobalData();
+
+if (globalData.error) {
+  console.error("Failed to fetch global data:", globalData.error.message);
+  throw new Error(globalData.error.message);
+}
+
+const { banner, header, footer } = globalData.data ?? {};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Domain Finance Australia</title>
+    <ClientRouter />
+  </head>
+  <body class="flex flex-col relative min-h-screen">
+    <Banner data={banner} />
+    <Header data={header} />
+    <slot />
+    <Footer data={footer} />
+  </body>
+</html>

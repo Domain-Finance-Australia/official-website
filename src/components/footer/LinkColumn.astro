@@ -1,0 +1,24 @@
+---
+import type { TLinkColumn } from "../../types";
+
+interface Props {
+  data: TLinkColumn;
+}
+
+const { data } = Astro.props;
+---
+
+<div class="flex flex-col gap-5">
+  <h3 class="text-base font-semibold text-center md:text-start">
+    {data.title}
+  </h3>
+  <ul class="flex flex-col gap-2 md:items-start items-center">
+    {
+      data.links.map((link) => (
+        <li class="text-center md:text-left">
+          <a href={link.href}>{link.label}</a>
+        </li>
+      ))
+    }
+  </ul>
+</div>

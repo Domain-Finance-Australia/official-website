@@ -1,0 +1,30 @@
+---
+import type {
+  TValuePropositions,
+  ValuePropositionStyles,
+} from "../../../types";
+import DetailedValueProps from "./DetailedValueProps.astro";
+import NoImageValueProps from "./NoImageValueProps.astro";
+import SimpleValueProps from "./SimpleValueProps.astro";
+import BlockLayout from "../BlockLayout.astro";
+
+interface Props {
+  block: TValuePropositions;
+}
+
+const { block } = Astro.props;
+
+const styleMap: Record<ValuePropositionStyles, any> = {
+  SIMPLE: SimpleValueProps,
+  NOIMAGE: NoImageValueProps,
+  DETAILED: DetailedValueProps,
+};
+
+const ValueProp = styleMap[block.style];
+---
+
+<BlockLayout>
+  <div class="w-full max-w-7xl">
+    <ValueProp block={block} />
+  </div>
+</BlockLayout>

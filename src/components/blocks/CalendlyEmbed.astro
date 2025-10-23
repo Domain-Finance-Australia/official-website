@@ -1,0 +1,28 @@
+---
+import type { TCalendlyEmbed } from "../../types";
+
+interface Props {
+  block: TCalendlyEmbed | undefined;
+}
+
+const { block } = Astro.props;
+
+if (!block) return null;
+
+const calendlyLink = block.calendlyLink;
+---
+
+<div class="h-min-[700px] py-10 h-full bg-white">
+  <div
+    class="calendly-inline-widget"
+    data-url={calendlyLink}
+    style="min-width:320px;height:700px;"
+  >
+  </div>
+</div>
+<script
+  is:inline
+  type="text/javascript"
+  src="https://assets.calendly.com/assets/external/widget.js"
+  async
+  data-astro-rerun></script>

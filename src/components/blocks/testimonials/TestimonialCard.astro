@@ -1,0 +1,23 @@
+---
+import Heading from "../../Heading.astro";
+
+interface Props {
+  name: string;
+  location: string;
+  text: string;
+}
+
+const { name, location: locationString, text } = Astro.props;
+---
+
+<div
+  class="w-[300px] bg-white rounded-2xl transition-all hover:translate-y-[-5px] shadow-md shadow-black/30"
+>
+  <div class="px-5 py-10 text-center">
+    <div class="mb-5">
+      <Heading level={5}>{name}</Heading>
+      <p class="font-extralight">{locationString}</p>
+    </div>
+    <p>{text}</p>
+  </div>
+</div>
