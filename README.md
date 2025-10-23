@@ -1,46 +1,44 @@
-# Astro Starter Kit: Basics
+# Domain Finance Australia Website
 
-```sh
-pnpm create astro@latest -- --template basics
+This repository contains the source code for the Domain Finance Australia website.
+The site is built using modern web technologies to ensure performance, maintainability, and scalability.
+
+## ⚙️ Built with
+[![Astro](https://img.shields.io/badge/Astro-BC52EE?logo=astro&logoColor=fff)](https://astro.build/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-%2338B2AC.svg?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+
+## 🛠️ Running Locally
+
+To run the project locally:
+
+### Clone the repository
+```
+git clone https://github.com/<your-username>/<repo-name>.git
+```
+### Navigate into the project directory
+```
+cd <repo-name>
+```
+### Install dependencies (with PNPM)
+```
+pnpm install
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
+### Run the development server
+```
+pnpm run dev
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+Then visit http://localhost:4321 (or the port specified in your terminal) to view the site.
 
-## 🧞 Commands
+## ⚖️ Copyright & Legal Notice
 
-All commands are run from the root of the project, from a terminal:
+© Domain Finance Australia. All rights reserved.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+The source code in this repository is strictly copyrighted and is the exclusive property of Domain Finance Australia.
 
-## 👀 Want to learn more?
+🔒 Unauthorized copying, distribution, or forking of this repository — in whole or in part — is strictly prohibited.
+Any such action may result in legal repercussions under applicable copyright laws.
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+If you wish to reference or discuss parts of the implementation for educational or technical purposes, please contact the repository owner for permission.
