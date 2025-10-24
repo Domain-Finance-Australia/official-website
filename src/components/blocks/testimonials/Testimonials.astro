@@ -15,15 +15,16 @@ const testimonials = block.testimonials;
 ---
 
 <section class="py-20">
-<Heading level={3} class="text-center text-white mb-15">{block.heading}</Heading>
-<div class="infinite-scroll-container w-full overflow-hidden relative py-5">
-  <div class="infinite-scroll-track flex gap-6 w-fit select-none">
-    {testimonials.map((card) => <TestimonialCard {...card} />)}
-    <!-- Duplicate cards for seamless loop -->
-    {testimonials.map((card) => <TestimonialCard {...card} />)}
-    {testimonials.map((card) => <TestimonialCard {...card} />)}
+  <Heading level={3} class="text-center text-white mb-15"
+    >{block.heading}</Heading
+  >
+  <div class="infinite-scroll-container w-full overflow-hidden relative py-5">
+    <div class="infinite-scroll-track flex w-fit gap-5 select-none">
+      {testimonials.map((card) => <TestimonialCard {...card} />)}
+      <!-- Duplicate cards for seamless loop -->
+      {testimonials.map((card) => <TestimonialCard {...card} />)}
+    </div>
   </div>
-</div>
 </section>
 
 <style>
@@ -46,57 +47,45 @@ const testimonials = block.testimonials;
 </style>
 
 <script is:inline>
-  const container = document.querySelector(".infinite-scroll-container");
-  const track = document.querySelector(".infinite-scroll-track");
-
-  const speed = 700;
-
-  function calculateDuration() {
-    // Calculate duration based on track width and speed
-    const trackWidth = track.scrollWidth / 2; // Divide by 2 because we duplicated
-    const duration = trackWidth / speed;
-    track.style.setProperty("--scroll-duration", `${duration}s`);
-  }
-
-  // Set pause on hover state
-  container.style.setProperty("--hover-state", "paused");
-
-  // Calculate initial duration
-  calculateDuration();
-
-  // Recalculate on window resize
-  let resizeTimer;
-  window.addEventListener("resize", () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(calculateDuration, 250);
-  });
-
-  document.addEventListender("astro:page-load", () => {
+  function initInfiniteScroll() {
     const container = document.querySelector(".infinite-scroll-container");
     const track = document.querySelector(".infinite-scroll-track");
 
+    if (!container || !track) return;
+
+    const speed = 90; // pixels per second
+
     function calculateDuration() {
       // Calculate duration based on track width and speed
-      const trackWidth = track.scrollWidth / 2; // Divide by 2 because we duplicated
-      const duration = trackWidth / speed;
+      const trackWidth = track.scrollWidth / 2;
+      let duration = trackWidth / speed;
       track.style.setProperty("--scroll-duration", `${duration}s`);
     }
 
     // Set pause on hover state
-    if (pauseOnHover) {
-      container.style.setProperty("--hover-state", "paused");
-    } else {
-      container.style.setProperty("--hover-state", "running");
-    }
+    container.style.setProperty("--hover-state", "paused");
 
     // Calculate initial duration
     calculateDuration();
 
     // Recalculate on window resize
     let resizeTimer;
-    window.addEventListener("resize", () => {
+    const handleResize = () => {
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(calculateDuration, 250);
-    });
+      resizeTimer = window.setTimeout(calculateDuration, 250);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup function for when component is removed
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }
+
+  initInfiniteScroll();
+
+  document.addEventListener("astro:page-load", () => {
+    initInfiniteScroll();
   });
 </script>

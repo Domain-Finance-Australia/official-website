@@ -15,12 +15,38 @@ type TGlobalData = {
   footer: TFooter;
 };
 
+// SEO Props Interface
+interface Props {
+  title?: string;
+  description?: string;
+  keywords?: string;
+  ogImage?: string;
+  ogType?: string;
+  canonicalUrl?: string;
+  noindex?: boolean;
+  nofollow?: boolean;
+}
+
+const {
+  title = "Domain Finance Australia - Expert Home Loans & Finance Solutions",
+  description = "Domain Finance Australia offers expert mortgage broking services, home loans, and finance solutions. Get competitive rates and personalized service from trusted Australian finance professionals.",
+  keywords = "home loans australia, mortgage broker, finance solutions, property finance, home loan rates, refinancing",
+  ogImage = "/images/og-default.png",
+  ogType = "website",
+  canonicalUrl,
+  noindex = false,
+  nofollow = false,
+} = Astro.props;
+
+// Get current URL for canonical and OG tags
+const currentUrl = canonicalUrl || new URL(Astro.url.pathname, Astro.site).href;
+const siteName = "Domain Finance Australia";
+
 async function getStrapiGlobalData(): Promise<TStrapiResponse<TGlobalData>> {
   const path = "/api/global";
   const url = new URL(path, BASE_API_URL);
   const response = await fetch(url.href);
   const data = await response.json();
-
   return data;
 }
 
@@ -35,19 +61,88 @@ const { banner, header, footer } = globalData.data ?? {};
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en-AU">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Primary Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+
+    <!-- Robots Meta -->
+    {
+      (noindex || nofollow) && (
+        <meta
+          name="robots"
+          content={`${noindex ? "noindex" : "index"},${nofollow ? "nofollow" : "follow"}`}
+        />
+      )
+    }
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={currentUrl} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={currentUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site).href} />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:locale" content="en_AU" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={currentUrl} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, Astro.site).href} />
+
+    <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <!-- Generator -->
     <meta name="generator" content={Astro.generator} />
-    <title>Domain Finance Australia</title>
+
+    <!-- Preconnect to external domains for performance -->
+    {
+      BASE_API_URL && (
+        <link rel="preconnect" href={new URL(BASE_API_URL).origin} />
+      )
+    }
+
+    <!-- Schema.org structured data -->
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FinancialService",
+        name: siteName,
+        url: Astro.site?.href,
+        logo: new URL("/images/logo.png", Astro.site).href,
+        description: description,
+        address: {
+          "@type": "PostalAddress",
+          addressCountry: "AU",
+        },
+        areaServed: "AU",
+        serviceType: ["Mortgage Broker", "Home Loans", "Finance Solutions"],
+      })}
+    />
+
     <ClientRouter />
   </head>
   <body class="flex flex-col relative min-h-screen">
     <Banner data={banner} />
     <Header data={header} />
-    <slot />
+    <main id="main-content">
+      <slot />
+    </main>
     <Footer data={footer} />
   </body>
 </html>
