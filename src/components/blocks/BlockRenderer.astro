@@ -8,6 +8,7 @@ import Affiliations from "./Affiliations.astro";
 import ProductCards from "./ProductCards.astro";
 import ContentWithImage from "./ContentWithImage.astro";
 import Testimonials from "./testimonials/Testimonials.astro";
+import FAQ from "./FAQ.astro";
 
 interface Props {
   blocks: TBlock[] | undefined;
@@ -22,6 +23,7 @@ const componentMap: Record<BlockType, any> = {
   "blocks.content-with-image": ContentWithImage,
   "blocks.value-propositions": ValuePropositions,
   "blocks.calendly-booking-embed": CalendlyEmbed,
+  "blocks.faq": FAQ,
 };
 
 const { blocks } = Astro.props;

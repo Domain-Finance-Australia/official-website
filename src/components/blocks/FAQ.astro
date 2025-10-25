@@ -1,0 +1,65 @@
+---
+import type { TFAQ } from "../../types";
+import Heading from "../Heading.astro";
+import BlockLayout from "./BlockLayout.astro";
+import UpArrow from "../icons/UpArrow.astro";
+import Markdown from "../Markdown.astro";
+
+interface Props {
+  block: TFAQ | undefined;
+}
+
+const { block } = Astro.props;
+
+if (!block) return null;
+---
+
+<BlockLayout>
+  <div class="flex flex-col gap-3">
+    <Heading level={3} class="text-center">{block.heading}</Heading>
+    <p>{block.subHeading}</p>
+    <div class="flex flex-col gap-4 mt-10">
+      {
+        block.questions.map((question) => (
+          <div class="faq-question bg-linear-to-tr pl-5  flex flex-col from-domain-dark to-domain-regular ring-1 ring-black/20 rounded-xl overflow-hidden">
+            <div class="faq-toggle flex bg-white w-full py-2 pr-5 items-center gap-5 cursor-pointer">
+              <Heading class="ml-5 select-none" level={5}>
+                {question.heading}
+              </Heading>
+              <UpArrow class="faq-arrow h-8  transition-all duration-150" />
+            </div>
+            <div class="faq-answer h-full bg-white pl-5 overflow-hidden max-h-0 transition-all duration-150 ">
+              <Markdown text={question.text} />
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</BlockLayout>
+
+<script is:inline>
+  const toggles = document.querySelectorAll(".faq-toggle");
+
+  toggles.forEach((toggle) => {
+    const question = toggle.parentElement;
+
+    const arrow = question.querySelector(".faq-arrow");
+
+    const answer = question.querySelector(".faq-answer");
+
+    toggle.addEventListener("click", () => {
+      if (arrow.classList.contains("rotate-180")) {
+        arrow.classList.remove("rotate-180");
+
+        answer.classList.remove("max-h-96");
+        answer.classList.add("max-h-0");
+      } else {
+        arrow.classList.add("rotate-180");
+
+        answer.classList.remove("max-h-0");
+        answer.classList.add("max-h-96");
+      }
+    });
+  });
+</script>

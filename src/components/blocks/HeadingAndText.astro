@@ -2,8 +2,7 @@
 import type { HeadingAndTextAlignments, THeadingAndText } from "../../types";
 import Heading from "../Heading.astro";
 import BlockLayout from "./BlockLayout.astro";
-import Prose from "../Prose.astro";
-import { marked } from "marked";
+import Markdown from "../Markdown.astro";
 
 interface Props {
   block: THeadingAndText | undefined;
@@ -20,14 +19,11 @@ const styles: Record<HeadingAndTextAlignments, any> = {
 };
 
 const style = styles[block.alignment];
-const markdown = marked.parse(block.text);
 ---
 
 <BlockLayout>
   <div class="flex flex-col gap-10 max-w-3xl">
     <Heading level={3} class={style.heading}>{block.heading}</Heading>
-    <Prose class={style.text}>
-      <div set:html={markdown} />
-    </Prose>
+    <Markdown class={style.text} text={block.text} />
   </div>
 </BlockLayout>

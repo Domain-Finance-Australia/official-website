@@ -25,7 +25,8 @@ export type BlockType =
   | "blocks.product-cards"
   | "blocks.testimonials"
   | "blocks.value-propositions"
-  | "blocks.calendly-booking-embed";
+  | "blocks.calendly-booking-embed"
+  | "blocks.faq";
 
 interface BlockComponentType {
   __component: BlockType;
@@ -196,4 +197,17 @@ export type TValuePropositions = {
 export type TCalendlyEmbed = {
   id: number;
   calendlyLink: string;
+};
+
+export type TQuestion = {
+  id: number;
+  heading: string;
+  text: string;
+};
+
+export type TFAQ = {
+  id: number;
+  heading: string;
+  subHeading: string;
+  questions: TQuestion[];
 };

@@ -1,0 +1,16 @@
+---
+import { marked } from "marked";
+import Prose from "./Prose.astro";
+
+interface Props {
+  class?: string;
+  text: string;
+}
+
+const { text, class: className } = Astro.props;
+const markdown = marked.parse(text);
+---
+
+<Prose class={className}>
+  <div set:html={markdown} />
+</Prose>
