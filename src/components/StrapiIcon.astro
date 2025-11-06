@@ -1,4 +1,6 @@
 ---
+import { BASE_API_URL } from "../utils/url";
+
 // Only accepts SVG's
 interface Props {
   src: string;
@@ -12,7 +14,13 @@ const { src, class: className, width, height } = Astro.props;
 // Fetch the SVG content from your CMS
 let svgContent = "";
 try {
-  const response = await fetch(src);
+  let iconSrc = src;
+
+  if (iconSrc.startsWith("/")) {
+    iconSrc = BASE_API_URL + iconSrc;
+  }
+
+  const response = await fetch(iconSrc);
   svgContent = await response.text();
 } catch (error) {
   console.error("Failed to fetch SVG:", error);

@@ -47,8 +47,6 @@ async function getStrapiGlobalData(): Promise<TStrapiResponse<TGlobalData>> {
   const url = new URL(path, BASE_API_URL);
   const response = await fetch(url.href);
 
-  console.log("ere", BASE_API_URL);
-
   const data = await response.json();
   return data;
 }
