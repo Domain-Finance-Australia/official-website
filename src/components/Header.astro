@@ -137,12 +137,10 @@ const logoSrc = data.logo.image.url;
       const dropdown = parent.querySelector(".dropdown");
       if (!dropdown) return;
 
-      console.log(dropdown);
       const isOpen =
         dropdown.classList.contains("flex") &&
         !dropdown.classList.contains("hidden");
 
-      console.log("goodbye", isOpen);
       // close everything first (so only one opens at a time)
       closeAllDropdowns();
 
@@ -210,7 +208,7 @@ const logoSrc = data.logo.image.url;
 </script>
 
 <script>
-  document.addEventListener("astro:page-load", () => {
+  document.addEventListener("astro:after-swap", () => {
     // dropdown on click
     function closeAllDropdowns() {
       document.querySelectorAll(".dropdown").forEach((d) => {
@@ -234,12 +232,10 @@ const logoSrc = data.logo.image.url;
         const dropdown = parent.querySelector(".dropdown");
         if (!dropdown) return;
 
-        console.log(dropdown);
         const isOpen =
           dropdown.classList.contains("flex") &&
           !dropdown.classList.contains("hidden");
 
-        console.log("goodbye", isOpen);
         // close everything first (so only one opens at a time)
         closeAllDropdowns();
 
